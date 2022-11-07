@@ -1,0 +1,48 @@
+﻿@page "/toys"
+@attribute [Authorize]
+
+@using PetStore.DataContracts.Toys
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject HttpClient Http
+
+@if (toys == null)
+{
+  <p><em>Loading...</em></p>
+}
+else
+{
+  <h3>Toys</h3>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+  @foreach (var toy in toys)
+  {
+    <div class="col">
+        <div class="card border-info mb-3" style="max-width: 18rem;">
+            <div class="card-header">@toy.Name</div>
+            <div class="card-body">
+                <h5 class="card-title">@toy.Category</h5>
+                <p class="card-text"><b>Type:</b> @toy.Type</p>
+                <p class="card-text"><b>Price:</b> @toy.Price</p>
+                <p class="card-text"><b>In stock:</b> @toy.Quantity</p>
+            </div>
+        </div>
+    </div>
+  }
+  </div>
+}
+
+@code {
+  List<GetToyResult> toys;
+
+  protected override async Task OnInitializedAsync()
+  {
+    try
+    {
+        var response = await Http.PostAsJsonAsync<SearchToysRequest>("toy/search", new SearchToysRequest());
+        toys = await response.Content.ReadAsAsync<List<GetToyResult>>();
+    }
+    catch (AccessTokenNotAvailableException exception)
+    {
+        exception.Redirect();
+    }
+  }
+}

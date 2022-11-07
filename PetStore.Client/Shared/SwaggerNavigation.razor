@@ -1,0 +1,27 @@
+﻿@inject NavigationManager NavManager
+
+<div class="alert alert-secondary mt-4">
+    <span class="oi oi-arrow-circle-right me-2" aria-hidden="true"></span>
+    <strong class="text-break">@Title</strong>
+</div>
+
+<br />
+
+<div class="float-end">
+        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('@Title')">Copy To Clipboard</button>
+        <button class="btn btn-success">
+            <a class="text-white" href="@_swaggerUrl" target="_blank">Open Swagger</a>
+        </button>
+    </div>
+@code {
+    [Parameter]
+    public string Title { get; set; }
+
+    private string _swaggerUrl;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _swaggerUrl = $"{NavManager.BaseUri}swagger";
+    }
+}

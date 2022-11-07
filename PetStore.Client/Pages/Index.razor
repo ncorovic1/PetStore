@@ -1,0 +1,35 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject IAccessTokenProvider _tokenProvider;
+
+<PageTitle>Home</PageTitle>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            Welcome to pet store app. 
+            @if (string.IsNullOrWhiteSpace(_token)) {
+                <span>Please log in.</span>
+            }
+            else
+            {
+                <span>Your token is:</span>
+                <SwaggerNavigation Title=@_token />
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private string _token;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tokenResolver = await _tokenProvider.RequestAccessToken();
+        if (tokenResolver.TryGetToken(out AccessToken accessToken))
+        {
+            _token = accessToken.Value;
+        }
+    }
+}
